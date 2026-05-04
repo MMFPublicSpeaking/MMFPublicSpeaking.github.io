@@ -21,19 +21,22 @@ export default function Layout({ children, currentPageName }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true; // Prevents memory leaks if component unmounts
     const checkAuth = async () => {
       try {
         const isAuth = await base44.auth.isAuthenticated();
-        if (isAuth) {
+        if (isAuth && isMounted) {
           const userData = await base44.auth.me();
           setUser(userData);
         }
       } catch (e) {
-        console.log('Not authenticated');
+        console.error('Authentication check failed:', e);
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
-      setIsLoading(false);
     };
     checkAuth();
+    return () => { isMounted = false; };
   }, []);
 
   const mentorNav = [
@@ -51,16 +54,13 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Resources', href: 'StudentResources', icon: FolderOpen },
   ];
 
-  const isStudentPage = ['StudentHub', 'StudentResources'].includes(currentPageName);
   const isLandingPage = currentPageName === 'Home';
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Navigation */}
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            {/* Logo */}
             <div className="flex items-center">
               <Link to={createPageUrl('Home')} className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center">
@@ -73,129 +73,24 @@ export default function Layout({ children, currentPageName }) {
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-1">
-              {!isLandingPage && user && (
+              {!isLoading && user && !isLandingPage && (
                 <>
                   {user.role === 'admin' && (
                     <Link to={createPageUrl('AdminDashboard')}>
                       <Button variant="ghost" className="gap-1">
-                        <LayoutDashboard className="w-4 h-4" /> Admin Dashboard
+                        <LayoutDashboard className="w-4 h-4" /> Admin
                       </Button>
                     </Link>
                   )}
                   {user.role === 'mentor' && (
                     <Link to={createPageUrl('MentorClasses')}>
                       <Button variant="ghost" className="gap-1">
-                        <LayoutDashboard className="w-4 h-4" /> Mentor Dashboard
+                        <LayoutDashboard className="w-4 h-4" /> Mentor
                       </Button>
                     </Link>
                   )}
                   {user.role === 'student' && (
                     <Link to={createPageUrl('StudentDashboard')}>
                       <Button variant="ghost" className="gap-1">
-                        <LayoutDashboard className="w-4 h-4" /> Student Dashboard
-                      </Button>
-                    </Link>
-                  )}
-                </>
-              )}
-
-              {/* Auth */}
-              {!isLoading && (
-                user ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="ml-2">
-                        {user.full_name || user.email}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => base44.auth.logout(createPageUrl('Home'))}>
-                        <LogOut className="w-4 h-4 mr-2" /> Sign Out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : (
-                  <Link to={createPageUrl('PortalSelect')}>
-                    <Button className="ml-2 bg-blue-600 hover:bg-blue-700">
-                      Sign In
-                    </Button>
-                  </Link>
-                )
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
-              >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 bg-white">
-            <div className="px-4 py-3 space-y-1">
-              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider py-2">
-                Mentor Portal
-              </div>
-              {mentorNav.map((item) => (
-                <Link
-                  key={item.name}
-                  to={createPageUrl(item.href)}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.name}
-                </Link>
-              ))}
-              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider py-2 mt-4">
-                Student Portal
-              </div>
-              {studentNav.map((item) => (
-                <Link
-                  key={item.name}
-                  to={createPageUrl(item.href)}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </nav>
-
-      {/* Main Content */}
-      <main>
-        {children}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
-              </div>
-              <span className="text-slate-600 text-sm">Meet My Friend Within</span>
-            </div>
-            <div className="text-slate-500 text-sm">
-              © 2026 Meet My Friend Within. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
+                        <LayoutDashboard className="
