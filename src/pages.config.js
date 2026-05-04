@@ -1,0 +1,110 @@
+/**
+ * pages.config.js - Page routing configuration
+ * 
+ * This file is AUTO-GENERATED. Do not add imports or modify PAGES manually.
+ * Pages are auto-registered when you create files in the ./pages/ folder.
+ * 
+ * THE ONLY EDITABLE VALUE: mainPage
+ * This controls which page is the landing page (shown when users visit the app).
+ * 
+ * Example file structure:
+ * 
+ *   import HomePage from './pages/HomePage';
+ *   import Dashboard from './pages/Dashboard';
+ *   import Settings from './pages/Settings';
+ *   
+ *   export const PAGES = {
+ *       "HomePage": HomePage,
+ *       "Dashboard": Dashboard,
+ *       "Settings": Settings,
+ *   }
+ *   
+ *   export const pagesConfig = {
+ *       mainPage: "HomePage",
+ *       Pages: PAGES,
+ *   };
+ * 
+ * Example with Layout (wraps all pages):
+ *
+ *   import Home from './pages/Home';
+ *   import Settings from './pages/Settings';
+ *   import __Layout from './Layout.jsx';
+ *
+ *   export const PAGES = {
+ *       "Home": Home,
+ *       "Settings": Settings,
+ *   }
+ *
+ *   export const pagesConfig = {
+ *       mainPage: "Home",
+ *       Pages: PAGES,
+ *       Layout: __Layout,
+ *   };
+ *
+ * To change the main page from HomePage to Dashboard, use find_replace:
+ *   Old: mainPage: "HomePage",
+ *   New: mainPage: "Dashboard",
+ *
+ * The mainPage value must match a key in the PAGES object exactly.
+ */
+import AdminAccounts from './pages/AdminAccounts.jsx/index.js';
+import AdminClassDetail from './pages/AdminClassDetail';
+import AdminClasses from './pages/AdminClasses';
+import AdminCurriculumDetail from './pages/AdminCurriculumDetail';
+import AdminCurriculums from './pages/AdminCurriculums';
+import AdminDashboard from './pages/AdminDashboard';
+import Community from './pages/Community';
+import Curriculum from './pages/Curriculum';
+import Home from './pages/Home';
+import Mentees from './pages/Mentees';
+import MentorClassAssignments from './pages/MentorClassAssignments';
+import MentorClassStream from './pages/MentorClassStream';
+import MentorClassView from './pages/MentorClassView';
+import MentorClasses from './pages/MentorClasses';
+import MentorDashboard from './pages/MentorDashboard';
+import PortalSelect from './pages/PortalSelect';
+import Resources from './pages/Resources';
+import StudentClass from './pages/StudentClass';
+import StudentDashboard from './pages/StudentDashboard';
+import StudentHub from './pages/StudentHub';
+import StudentResources from './pages/StudentResources';
+import MentorSubmissions from './pages/MentorSubmissions';
+import StudentProgress from './pages/StudentProgress';
+import MentorContact from './pages/MentorContact';
+import StudentContact from './pages/StudentContact';
+import __Layout from './Layout.jsx';
+
+
+export const PAGES = {
+    "AdminAccounts": AdminAccounts,
+    "AdminClassDetail": AdminClassDetail,
+    "AdminClasses": AdminClasses,
+    "AdminCurriculumDetail": AdminCurriculumDetail,
+    "AdminCurriculums": AdminCurriculums,
+    "AdminDashboard": AdminDashboard,
+    "Community": Community,
+    "Curriculum": Curriculum,
+    "Home": Home,
+    "Mentees": Mentees,
+    "MentorClassAssignments": MentorClassAssignments,
+    "MentorClassStream": MentorClassStream,
+    "MentorClassView": MentorClassView,
+    "MentorClasses": MentorClasses,
+    "MentorDashboard": MentorDashboard,
+    "PortalSelect": PortalSelect,
+    "Resources": Resources,
+    "StudentClass": StudentClass,
+    "StudentDashboard": StudentDashboard,
+    "StudentHub": StudentHub,
+    "StudentResources": StudentResources,
+    "MentorSubmissions": MentorSubmissions,
+    "StudentProgress": StudentProgress,
+    "MentorContact": MentorContact,
+    "StudentContact": StudentContact,
+}
+
+export const pagesConfig = {
+    mainPage: "Home",
+    Pages: PAGES,
+    Layout: __Layout,
+};
